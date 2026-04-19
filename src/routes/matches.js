@@ -72,6 +72,13 @@ router.post("/", async (req, res) => {
       })
       .returning();
 
+
+      if(req.app.locals.broadcastMatchCreate) {
+        req.app.locals.broadcastMatchCreate(event);
+      }
+
+
+
     res.status(201).json({ data: event });
   } catch (error) {
     console.error("Error creating match:", error);
