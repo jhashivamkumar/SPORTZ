@@ -1,4 +1,5 @@
 import { WebSocket, WebSocketServer } from "ws";
+import { wsArcjet } from "../arcjet.js";
 
 function sendJson(socket, payload) {
   if (socket.readyState !== WebSocket.OPEN) {
@@ -25,7 +26,32 @@ export function attachWebSocketServer(server) {
     maxPayload: 1024 * 1024,
   });
 
-  wss.on("connection", (socket) => {
+  wss.on("connection",async (socket,req) => {
+     
+      if(wsArcjet)
+      {
+        try {
+
+            const decision = wsArcjet.protectWebSocket(req);
+
+            if (decision.isdenied) {
+              if (decision.reason.isRateLimit) {
+                socket.close(1013, "Too Many Requests");
+                return;
+              }
+              socket.close(1008, "Forbidden");
+              return;
+            }
+        }
+        catch (error) {
+          console.error("Error in Arcjet WebSocket protection:", error);
+          socket.close(1011, "WebSocket protection error");
+          return;
+        }
+      }
+
+
+
         socket.isAlive = true;
         socket.on("pong", () => {
           socket.isAlive = true;

@@ -26,6 +26,12 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Express server!' });
 });
 
+
+//arcjet security middleware
+import { securityMiddleware } from './arcjet.js';
+app.use(securityMiddleware);
+
+
 app.use('/matches',matchRoutes);
 
 //attach WebSocket server
