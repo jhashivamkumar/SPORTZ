@@ -1,5 +1,4 @@
-import arcjet, { detectBot, shield } from "@arcjet/node";
-import { duration } from "drizzle-orm/gel-core";
+import arcjet, { detectBot, shield, slidingWindow } from "@arcjet/node";
 
 const arcjetKey = process.env.ARCJET_API_KEY;
 const arcjetMode = process.env.ARCJET_MODE === "DRY_RUN" ? "DRY_RUN" : "LIVE";
@@ -16,7 +15,11 @@ export const httpArcjet = arcjetKey
         detectBot({
           mode: arcjetMode,
           allow: ["CATEGORY:SEARCH_ENGINE", "CATEGORY:PREVIEW"],
-          slideWindow: ({mode:arcjetMode, interval:'10s',max:2}),
+        }),
+        slidingWindow({
+          mode: arcjetMode,
+          interval: "10s",
+          max: 2,
         }),
       ],
     })
@@ -28,9 +31,13 @@ export const wsArcjet = arcjetKey
       rules: [
         shield({ mode: arcjetMode }),
         detectBot({
-          mode: arcjetMode, 
+          mode: arcjetMode,
           allow: ["CATEGORY:SEARCH_ENGINE", "CATEGORY:PREVIEW"],
-          slideWindow: ({mode:arcjetMode, interval:'10s',max:50}),
+        }),
+        slidingWindow({
+          mode: arcjetMode,
+          interval: "10s",
+          max: 50,
         }),
       ],
     })
