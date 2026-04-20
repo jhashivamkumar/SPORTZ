@@ -34,7 +34,7 @@ export function attachWebSocketServer(server) {
 
             const decision = wsArcjet.protectWebSocket(req);
 
-            if (decision.isdenied) {
+            if (decision.isDenied) {
               if (decision.reason.isRateLimit) {
                 socket.close(1013, "Too Many Requests");
                 return;
